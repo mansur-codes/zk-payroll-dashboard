@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Users, Loader2 } from "lucide-react";
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
@@ -23,8 +23,16 @@ const STATUS_BADGE: Record<"active" | "inactive" | "pending", string> = {
 };
 
 function EmployeeDirectory() {
-  const { employees: storedEmployees, isLoading } = useEmployeeStore();
+  const { employees: storedEmployees, isLoading: storeLoading } = useEmployeeStore();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [localLoading, setLocalLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLocalLoading(false), 850);
+    return () => clearTimeout(t);
+  }, []);
+
+  const isLoading = storeLoading || localLoading;
 
   const employees = storedEmployees.length > 0 ? storedEmployees : MOCK_EMPLOYEES;
 
@@ -74,9 +82,40 @@ function EmployeeDirectory() {
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-16 gap-2 text-gray-500">
-            <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-            <span className="text-sm">Loading employees…</span>
+          <div className="animate-pulse" role="status" aria-label="Loading employees">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Name</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Department</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Salary</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Status</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Start Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {[1, 2, 3, 4, 5].map((idx) => (
+                  <tr key={idx}>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-200 rounded w-28 mb-2"></div>
+                      <div className="h-3 bg-gray-100 rounded w-36"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-200 rounded w-16"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-6 bg-gray-200 rounded-full w-14"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-200 rounded w-24"></div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState

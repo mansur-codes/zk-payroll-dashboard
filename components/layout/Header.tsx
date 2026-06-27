@@ -1,20 +1,24 @@
 import { Bell, Search, User } from "lucide-react";
 
 function Header() {
+  const triggerPalette = () => {
+    window.dispatchEvent(new CustomEvent("open-command-palette"));
+  };
+
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white shadow-sm border-b">
-      <div className="flex items-center" role="search">
-        <Search className="w-5 h-5 text-gray-600" aria-hidden="true" />
-        <label htmlFor="global-search" className="sr-only">
-          Search
-        </label>
-        <input
-          id="global-search"
-          className="ml-2 outline-none bg-transparent placeholder-gray-400 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:rounded"
-          type="search"
-          placeholder="Search..."
-        />
-      </div>
+      <button
+        type="button"
+        onClick={triggerPalette}
+        className="flex items-center text-left bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-lg px-3 py-1.5 w-64 text-gray-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        aria-label="Search actions (shortcut: Command + K)"
+      >
+        <Search className="w-4 h-4 text-gray-400 shrink-0 mr-2" aria-hidden="true" />
+        <span className="text-xs flex-1 text-gray-500">Search commands...</span>
+        <span className="hidden sm:flex items-center gap-0.5 text-[9px] font-bold text-gray-400 bg-white border px-1.5 py-0.5 rounded shadow-sm shrink-0">
+          <span>⌘</span><span>K</span>
+        </span>
+      </button>
       <div className="flex items-center space-x-4">
         <button
           className="text-gray-600 hover:text-gray-800 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none focus-visible:rounded"
@@ -41,3 +45,4 @@ function Header() {
 }
 
 export default Header;
+

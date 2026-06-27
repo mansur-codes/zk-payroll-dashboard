@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { generatePayrollProof } from "@/lib/zk";
 
 interface ProofUiState {
@@ -12,6 +12,12 @@ function PayrollSummary() {
 	const [proofState, setProofState] = useState<ProofUiState>({
 		status: "idle",
 	});
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		const t = setTimeout(() => setIsLoading(false), 600);
+		return () => clearTimeout(t);
+	}, []);
 
 	const proofToneClass = useMemo(() => {
 		if (proofState.status === "success") {
@@ -69,57 +75,78 @@ function PayrollSummary() {
 			<h2 id="payroll-summary-heading" className="sr-only">
 				Payroll Summary
 			</h2>
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6" role="list">
-				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
-					<h3 className="text-sm font-medium text-gray-600">Total Payroll</h3>
-					<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">$124,500</p>
-					<span className="text-green-700 text-sm font-medium">
-						+12% from last month
-					</span>
-				</article>
-				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
-					<h3 className="text-sm font-medium text-gray-600">
-						Active Employees
-					</h3>
-					<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">48</p>
-					<span className="text-gray-600 text-sm font-medium">
-						2 new this week
-					</span>
-				</article>
-				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
-					<h3 className="text-sm font-medium text-gray-600">
-						Pending Approvals
-					</h3>
-					<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">3</p>
-					<span className="text-yellow-700 text-sm font-medium">
-						Action required
-					</span>
-				</article>
-			</div>
+			{isLoading ? (
+				<div className="space-y-6 animate-pulse" role="status" aria-label="Loading payroll summary">
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+						{[1, 2, 3].map((idx) => (
+							<div key={idx} className="bg-white p-6 rounded-lg shadow-sm space-y-3">
+								<div className="h-4 bg-gray-200 rounded w-24"></div>
+								<div className="h-8 bg-gray-200 rounded w-32"></div>
+								<div className="h-4 bg-gray-200 rounded w-28"></div>
+							</div>
+						))}
+					</div>
+					<div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
+						<div className="h-6 bg-gray-200 rounded w-48"></div>
+						<div className="h-4 bg-gray-200 rounded w-3/4"></div>
+						<div className="h-10 bg-gray-200 rounded w-40"></div>
+					</div>
+				</div>
+			) : (
+				<>
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6" role="list">
+						<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
+							<h3 className="text-sm font-medium text-gray-600">Total Payroll</h3>
+							<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">$124,500</p>
+							<span className="text-green-700 text-sm font-medium">
+								+12% from last month
+							</span>
+						</article>
+						<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
+							<h3 className="text-sm font-medium text-gray-600">
+								Active Employees
+							</h3>
+							<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">48</p>
+							<span className="text-gray-600 text-sm font-medium">
+								2 new this week
+							</span>
+						</article>
+						<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
+							<h3 className="text-sm font-medium text-gray-600">
+								Pending Approvals
+							</h3>
+							<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">3</p>
+							<span className="text-yellow-700 text-sm font-medium">
+								Action required
+							</span>
+						</article>
+					</div>
 
-			<article className="bg-white p-6 rounded-lg shadow-sm space-y-3">
-				<h3 className="text-lg font-semibold text-gray-900">
-					Mock ZK Proof Generator
-				</h3>
-				<p className="text-sm text-gray-600">
-					Runs proof generation locally in-browser with placeholder artifacts
-					until final Soroban verifier deployment.
-				</p>
-				<button
-					type="button"
-					className="px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium disabled:opacity-60 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-					onClick={handleGenerateMockProof}
-					disabled={proofState.status === "running"}
-					aria-live="polite"
-				>
-					{proofState.status === "running"
-						? "Generating..."
-						: "Generate Mock Payroll Proof"}
-				</button>
-				<p className={`text-sm ${proofToneClass}`} aria-live="polite" role="status">
-					{proofState.message ?? "No proof generated yet."}
-				</p>
-			</article>
+					<article className="bg-white p-6 rounded-lg shadow-sm space-y-3">
+						<h3 className="text-lg font-semibold text-gray-900">
+							Mock ZK Proof Generator
+						</h3>
+						<p className="text-sm text-gray-600">
+							Runs proof generation locally in-browser with placeholder artifacts
+							until final Soroban verifier deployment.
+						</p>
+						<button
+							type="button"
+							className="px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium disabled:opacity-60 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+							onClick={handleGenerateMockProof}
+							disabled={proofState.status === "running"}
+							aria-live="polite"
+						>
+							{proofState.status === "running"
+								? "Generating..."
+								: "Generate Mock Payroll Proof"}
+						</button>
+						<p className={`text-sm ${proofToneClass}`} aria-live="polite" role="status">
+							{proofState.message ?? "No proof generated yet."}
+						</p>
+					</article>
+				</>
+			)}
 		</section>
 	);
 }
