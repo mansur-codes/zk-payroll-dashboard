@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Users, Loader2 } from "lucide-react";
+import { Users, Loader2, UserPlus } from "lucide-react";
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
 import EmptyState from "@/components/ui/EmptyState";
+import { AddEmployeeModal } from "./AddEmployeeModal";
 
 type StatusFilter = "all" | "active" | "inactive" | "pending";
 
@@ -25,6 +26,7 @@ const STATUS_BADGE: Record<"active" | "inactive" | "pending", string> = {
 function EmployeeDirectory() {
   const { employees: storedEmployees, isLoading } = useEmployeeStore();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const employees = storedEmployees.length > 0 ? storedEmployees : MOCK_EMPLOYEES;
 
@@ -70,6 +72,14 @@ function EmployeeDirectory() {
                 </button>
               ),
             )}
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+            >
+              <UserPlus className="w-3.5 h-3.5" aria-hidden="true" />
+              Add Employee
+            </button>
           </div>
         </div>
 
@@ -159,6 +169,11 @@ function EmployeeDirectory() {
           </div>
         )}
       </div>
+
+      <AddEmployeeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </section>
   );
 }
