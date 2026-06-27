@@ -80,17 +80,7 @@ function EmployeeDirectory() {
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState
-            icon={Users}
-            title={
-              statusFilter === "all"
-                ? "No employees yet"
-                : `No ${statusFilter} employees`
-            }
-            description={
-              statusFilter === "all"
-                ? "Add employees to get started with payroll."
-                : `There are no employees with ${statusFilter} status.`
-            }
+            screen={statusFilter === "all" ? "employees" : "employees-filtered"}
             action={
               statusFilter !== "all"
                 ? { label: "View all employees", onClick: () => setStatusFilter("all") }
