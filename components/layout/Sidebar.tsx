@@ -1,4 +1,5 @@
-import { Home, Users, Settings, History, Shield, Play, Building2, Landmark } from "lucide-react";
+import Link from "next/link";
+import { Home, Users, Settings, History, Shield, Play, Building2, Landmark, CalendarDays } from "lucide-react";
 
 function Sidebar() {
     return (
@@ -15,6 +16,10 @@ function Sidebar() {
                     <Users className="w-5 h-5 mr-3" />
                     Employees
                 </a>
+                <Link className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/payroll/schedule">
+                    <CalendarDays className="w-5 h-5 mr-3" />
+                    Payroll Schedule
+                </Link>
                 <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/payroll/execute">
                     <Play className="w-5 h-5 mr-3" />
                     Execute Payroll

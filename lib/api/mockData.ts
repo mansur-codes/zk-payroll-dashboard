@@ -107,6 +107,24 @@ export const MOCK_PAYROLL_RUNS: PayrollRun[] = MOCK_TRANSACTIONS.map(tx => ({
   transactionHash: tx.txHash || null,
 }));
 
+export const MOCK_PAYROLL_RUNS_EMPTY: PayrollRun[] = [];
+
+export const MOCK_PAYROLL_RUNS_FIRST_RUN: PayrollRun[] = [
+  {
+    id: "tx_first",
+    companyId: "company_001",
+    timestamp: "2026-07-15T09:00:00Z",
+    createdAt: "2026-06-01T09:00:00Z",
+    totalAmount: 9500,
+    employeeCount: 2,
+    proof: "",
+    status: "pending",
+    employeeIds: ["emp_001", "emp_002"],
+    executedAt: null,
+    transactionHash: null,
+  },
+];
+
 export const MOCK_TREASURY_BALANCE = {
   balance: 45000,
   projectedPayroll: 19500,
