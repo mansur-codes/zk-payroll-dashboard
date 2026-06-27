@@ -13,6 +13,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useViewKeyStore } from "@/stores/viewKeys";
 import { MOCK_VIEW_KEYS } from "@/lib/api/mockData";
 import type { ViewKey } from "@/types";
@@ -59,10 +60,16 @@ function ComplianceManager() {
     addViewKey(newKey);
     setForm({ auditorName: "", auditorOrg: "", scope: "read-only" });
     setShowForm(false);
+    toast.success("View key generated", {
+      description: "Auditor access has been granted.",
+    });
   };
 
   const handleRevoke = (id: string) => {
     revokeViewKey(id);
+    toast.success("View key revoked", {
+      description: "Auditor access has been immediately revoked.",
+    });
   };
 
   const toggleReveal = (id: string) => {
@@ -80,6 +87,9 @@ function ComplianceManager() {
   const copyKeyId = async (keyId: string, id: string) => {
     await navigator.clipboard.writeText(keyId);
     setCopiedId(id);
+    toast.success("Copied to clipboard", {
+      description: "Key ID copied to clipboard.",
+    });
     setTimeout(() => setCopiedId(null), 2000);
   };
 

@@ -10,6 +10,7 @@ import {
   ArrowRight,
   RotateCcw,
 } from "lucide-react";
+import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { PayrollWizardStep } from "@/types";
@@ -66,12 +67,16 @@ function PayrollWizard() {
     const success = Math.random() > 0.2;
     if (success) {
       setProofStatus("success");
+      toast.success("Proof generated successfully");
       nextStep();
     } else {
       setProofStatus("error");
       setProofError(
         "Proof generation failed: circuit constraint mismatch. Please retry.",
       );
+      toast.error("Proof generation failed", {
+        description: "Circuit constraint mismatch.",
+      });
     }
   }, [setProofStatus, setProofError, nextStep]);
 
@@ -85,12 +90,18 @@ function PayrollWizard() {
     if (success) {
       setSubmissionStatus("success");
       setTransactionHash(`0x${Date.now().toString(16)}abc`);
+      toast.success("Payroll submitted successfully", {
+        description: "Transaction submitted to the Stellar network.",
+      });
       nextStep();
     } else {
       setSubmissionStatus("error");
       setSubmissionError(
         "Submission failed: network timeout. The transaction may still be processing.",
       );
+      toast.error("Submission failed", {
+        description: "Network timeout. The transaction may still be processing.",
+      });
     }
   }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep]);
 
