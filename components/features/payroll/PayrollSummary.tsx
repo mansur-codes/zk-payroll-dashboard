@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { generatePayrollProof } from "@/lib/zk";
+import { HelpButton } from "@/components/ui/HelpDrawer";
 
 interface ProofUiState {
 	status: "idle" | "running" | "success" | "error";
@@ -72,55 +73,39 @@ function PayrollSummary() {
 
 	return (
 		<section className="space-y-6" aria-labelledby="payroll-summary-heading">
-			<h2 id="payroll-summary-heading" className="sr-only">
-				Payroll Summary
-			</h2>
-			{isLoading ? (
-				<div className="space-y-6 animate-pulse" role="status" aria-label="Loading payroll summary">
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-						{[1, 2, 3].map((idx) => (
-							<div key={idx} className="bg-white p-6 rounded-lg shadow-sm space-y-3">
-								<div className="h-4 bg-gray-200 rounded w-24"></div>
-								<div className="h-8 bg-gray-200 rounded w-32"></div>
-								<div className="h-4 bg-gray-200 rounded w-28"></div>
-							</div>
-						))}
-					</div>
-					<div className="bg-white p-6 rounded-lg shadow-sm space-y-4">
-						<div className="h-6 bg-gray-200 rounded w-48"></div>
-						<div className="h-4 bg-gray-200 rounded w-3/4"></div>
-						<div className="h-10 bg-gray-200 rounded w-40"></div>
-					</div>
-				</div>
-			) : (
-				<>
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6" role="list">
-						<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
-							<h3 className="text-sm font-medium text-gray-600">Total Payroll</h3>
-							<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">$124,500</p>
-							<span className="text-green-700 text-sm font-medium">
-								+12% from last month
-							</span>
-						</article>
-						<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
-							<h3 className="text-sm font-medium text-gray-600">
-								Active Employees
-							</h3>
-							<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">48</p>
-							<span className="text-gray-600 text-sm font-medium">
-								2 new this week
-							</span>
-						</article>
-						<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
-							<h3 className="text-sm font-medium text-gray-600">
-								Pending Approvals
-							</h3>
-							<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">3</p>
-							<span className="text-yellow-700 text-sm font-medium">
-								Action required
-							</span>
-						</article>
-					</div>
+			<div className="flex items-center justify-between">
+				<h2 id="payroll-summary-heading" className="sr-only">
+					Payroll Summary
+				</h2>
+				<HelpButton page="payroll" label="Help" />
+			</div>
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6" role="list">
+				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
+					<h3 className="text-sm font-medium text-gray-600">Total Payroll</h3>
+					<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">$124,500</p>
+					<span className="text-green-700 text-sm font-medium">
+						+12% from last month
+					</span>
+				</article>
+				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
+					<h3 className="text-sm font-medium text-gray-600">
+						Active Employees
+					</h3>
+					<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">48</p>
+					<span className="text-gray-600 text-sm font-medium">
+						2 new this week
+					</span>
+				</article>
+				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
+					<h3 className="text-sm font-medium text-gray-600">
+						Pending Approvals
+					</h3>
+					<p className="text-3xl font-bold text-gray-900 mt-2" aria-live="polite">3</p>
+					<span className="text-yellow-700 text-sm font-medium">
+						Action required
+					</span>
+				</article>
+			</div>
 
 					<article className="bg-white p-6 rounded-lg shadow-sm space-y-3">
 						<h3 className="text-lg font-semibold text-gray-900">

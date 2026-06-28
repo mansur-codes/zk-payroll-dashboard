@@ -6,6 +6,7 @@ import { useWalletStore } from "@/stores/walletStore";
 import { useCompanyStore } from "@/stores/company";
 import WalletConnect from "@/components/features/wallet/WalletConnect";
 import PayrollSummary from "@/components/features/payroll/PayrollSummary";
+import SystemStatus from "@/components/features/dashboard/SystemStatus";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 function DashboardHome() {
@@ -79,6 +80,9 @@ function DashboardHome() {
         </div>
         <WalletConnect />
       </div>
+      <ErrorBoundary>
+        <SystemStatus />
+      </ErrorBoundary>
       <ErrorBoundary>
         <PayrollSummary />
       </ErrorBoundary>
