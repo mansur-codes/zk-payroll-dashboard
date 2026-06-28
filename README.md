@@ -100,6 +100,12 @@ Navigate to the **Dashboard** tab. You will see a summary of active employees an
 
 Once the transaction is confirmed, it will appear in the **Transaction History** table. The "Verified" status indicates that the on-chain ZK verifier successfully validated the payment proof.
 
+## 📚 Operator docs
+
+- [Dashboard setup guide](docs/SETUP_GUIDE.md)
+- [Admin recovery guide](docs/ADMIN_RECOVERY_GUIDE.md)
+- [Content style guide](docs/CONTENT_STYLE_GUIDE.md)
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please check out the [issues](https://github.com/zkpayroll/zk-payroll-dashboard/issues) page.

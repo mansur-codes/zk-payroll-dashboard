@@ -6,7 +6,7 @@ function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 bg-white shadow-sm border-b">
+    <header className="flex items-center justify-between pl-16 pr-6 py-4 md:px-6 bg-white shadow-sm border-b">
       <button
         type="button"
         onClick={triggerPalette}
@@ -32,12 +32,12 @@ function Header() {
           aria-label="User profile"
         >
           <div
-            className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center"
+            className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"
             aria-hidden="true"
           >
             <User className="w-5 h-5 text-gray-600" />
           </div>
-          <span className="text-sm font-medium text-gray-700">Admin</span>
+          <span className="hidden sm:inline text-sm font-medium text-gray-700">Admin</span>
         </div>
       </div>
     </header>

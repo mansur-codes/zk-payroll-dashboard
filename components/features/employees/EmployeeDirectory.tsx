@@ -52,7 +52,7 @@ function EmployeeDirectory() {
   return (
     <section aria-labelledby="employee-directory-heading">
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="px-4 sm:px-6 py-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <h3
             id="employee-directory-heading"
             className="text-lg font-medium text-gray-900"
@@ -60,24 +60,22 @@ function EmployeeDirectory() {
             Employee Directory
           </h3>
           <div className="flex items-center gap-2 flex-wrap">
-            {(["all", "active", "inactive", "pending"] as StatusFilter[]).map(
-              (s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setStatusFilter(s)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                    statusFilter === s
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {s === "all"
-                    ? `All (${employees.length})`
-                    : `${s.charAt(0).toUpperCase() + s.slice(1)} (${counts[s]})`}
-                </button>
-              ),
-            )}
+            {(["all", "active", "inactive", "pending"] as StatusFilter[]).map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setStatusFilter(s)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors min-h-[32px] ${
+                  statusFilter === s
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {s === "all"
+                  ? `All (${employees.length})`
+                  : `${s.charAt(0).toUpperCase() + s.slice(1)} (${counts[s]})`}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -119,12 +117,9 @@ function EmployeeDirectory() {
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState
+            screen={statusFilter === "all" ? "employees" : "employees-filtered"}
             icon={Users}
-            title={
-              statusFilter === "all"
-                ? "No employees yet"
-                : `No ${statusFilter} employees`
-            }
+            title={statusFilter === "all" ? "No employees yet" : `No ${statusFilter} employees`}
             description={
               statusFilter === "all"
                 ? "Add employees to get started with payroll."
@@ -137,63 +132,86 @@ function EmployeeDirectory() {
             }
           />
         ) : (
-          <table className="w-full text-left">
-            <caption className="sr-only">Employee directory</caption>
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">
-                  Name
-                </th>
-                <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">
-                  Department
-                </th>
-                <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">
-                  Salary
-                </th>
-                <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">
-                  Start Date
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100" aria-live="polite">
+          <>
+            {/* Mobile card list */}
+            <ul
+              className="md:hidden divide-y divide-gray-100"
+              aria-label="Employee directory"
+              aria-live="polite"
+            >
               {filtered.map((emp) => {
                 const status = deriveStatus(emp);
                 return (
-                  <tr key={emp.id}>
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{emp.name}</div>
-                      {emp.email && (
-                        <div className="text-xs text-gray-500">{emp.email}</div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {emp.department ?? "—"}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      ${emp.salary.toLocaleString()}
-                    </td>
-                    <td className="px-6 py-4">
+                  <li key={emp.id} className="px-4 py-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{emp.name}</p>
+                        {emp.email && (
+                          <p className="text-xs text-gray-500 truncate mt-0.5">{emp.email}</p>
+                        )}
+                        <p className="text-xs text-gray-500 mt-1">
+                          {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          Since {new Date(emp.startDate).toLocaleDateString()}
+                        </p>
+                      </div>
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}
+                        className={`flex-shrink-0 px-2 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}
                       >
                         {status}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {new Date(emp.startDate).toLocaleDateString()}
-                    </td>
-                  </tr>
+                    </div>
+                  </li>
                 );
               })}
-            </tbody>
-          </table>
+            </ul>
+
+            {/* Desktop table */}
+            <table className="hidden md:table w-full text-left">
+              <caption className="sr-only">Employee directory</caption>
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Name</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Department</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Salary</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Status</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Start Date</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100" aria-live="polite">
+                {filtered.map((emp) => {
+                  const status = deriveStatus(emp);
+                  return (
+                    <tr key={emp.id}>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">{emp.name}</div>
+                        {emp.email && (
+                          <div className="text-xs text-gray-500">{emp.email}</div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{emp.department ?? "—"}</td>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        ${emp.salary.toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}>
+                          {status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {new Date(emp.startDate).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
         )}
 
         {!isLoading && filtered.length > 0 && (
-          <div className="px-6 py-3 border-t text-xs text-gray-500">
+          <div className="px-4 sm:px-6 py-3 border-t text-xs text-gray-500">
             Showing {filtered.length} of {employees.length} employees
           </div>
         )}

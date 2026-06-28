@@ -36,7 +36,14 @@ export const WalletErrorOverlay: React.FC<WalletErrorOverlayProps> = ({
         'wrong-network': {
             title: '⚠️ Wrong Network',
             description: `Your wallet is on ${currentNetwork ?? 'an unknown network'}, but this app requires ${expectedNetwork ?? 'a different network'}. Please switch networks in your Freighter extension.`,
-            action: null,
+            action: (
+                <ol className="text-sm text-left text-gray-600 dark:text-gray-400 mt-3 space-y-1 list-decimal list-inside">
+                    <li>Open your Freighter extension</li>
+                    <li>Go to Settings → Network</li>
+                    <li>Select <strong>{expectedNetwork}</strong></li>
+                    <li>Return to the application. The network will be detected automatically.</li>
+                </ol>
+            ),
         },
         generic: {
             title: '❌ Wallet Error',

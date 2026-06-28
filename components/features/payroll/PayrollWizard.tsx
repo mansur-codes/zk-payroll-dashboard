@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
+import { useWalletStore } from "@/stores/walletStore";
+import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { PayrollWizardStep } from "@/types";
 
@@ -47,6 +49,9 @@ function PayrollWizard() {
     setTransactionHash,
     reset,
   } = usePayrollWizardStore();
+
+  const network = useWalletStore((s) => s.network);
+  const isWrongNetwork = network !== EXPECTED_NETWORK;
 
   const selectedEmployees = useMemo(
     () => MOCK_EMPLOYEES.filter((e) => employeeIds.includes(e.id)),
@@ -157,6 +162,7 @@ function PayrollWizard() {
             totalAmount={totalAmount}
             onStart={handleStartPayroll}
             onNext={nextStep}
+            isWrongNetwork={isWrongNetwork}
           />
         )}
         {currentStep === "proof" && (
@@ -166,6 +172,7 @@ function PayrollWizard() {
             onGenerate={handleGenerateProof}
             onRetry={handleGenerateProof}
             onBack={prevStep}
+            isWrongNetwork={isWrongNetwork}
           />
         )}
         {currentStep === "confirm" && (
@@ -175,6 +182,7 @@ function PayrollWizard() {
             totalAmount={totalAmount}
             onBack={prevStep}
             onSubmit={handleSubmit}
+            isWrongNetwork={isWrongNetwork}
           />
         )}
         {currentStep === "submit" && (
@@ -197,12 +205,14 @@ function ReviewStep({
   totalAmount,
   onStart,
   onNext,
+  isWrongNetwork,
 }: {
   employeeIds: string[];
   selectedEmployees: { id: string; name: string; salary: number }[];
   totalAmount: number;
   onStart: () => void;
   onNext: () => void;
+  isWrongNetwork: boolean;
 }) {
   if (employeeIds.length === 0) {
     return (
@@ -213,7 +223,9 @@ function ReviewStep({
         <button
           type="button"
           onClick={onStart}
-          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          disabled={isWrongNetwork}
+          title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Start Payroll Run
         </button>
@@ -261,12 +273,14 @@ function ProofStep({
   onGenerate,
   onRetry,
   onBack,
+  isWrongNetwork,
 }: {
   status: "idle" | "generating" | "success" | "error";
   error: string | null;
   onGenerate: () => void;
   onRetry: () => void;
   onBack: () => void;
+  isWrongNetwork: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -282,7 +296,9 @@ function ProofStep({
           <button
             type="button"
             onClick={onGenerate}
-            className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+            disabled={isWrongNetwork}
+            title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+            className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Generate Proof
           </button>
@@ -335,12 +351,14 @@ function ConfirmStep({
   totalAmount,
   onBack,
   onSubmit,
+  isWrongNetwork,
 }: {
   employeeIds: string[];
   selectedEmployees: { id: string; name: string; salary: number }[];
   totalAmount: number;
   onBack: () => void;
   onSubmit: () => void;
+  isWrongNetwork: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -389,7 +407,9 @@ function ConfirmStep({
         <button
           type="button"
           onClick={onSubmit}
-          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          disabled={isWrongNetwork}
+          title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Submit Payroll
         </button>

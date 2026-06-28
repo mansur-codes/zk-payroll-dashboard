@@ -1,6 +1,5 @@
-import assert from "node:assert/strict";
 import { webcrypto } from "node:crypto";
-import { afterEach, beforeEach, describe, it } from "node:test";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { initializeZkEngine, resetZkEngineForTests, zkEngine } from "@/lib/zk";
 import type { ZkProofRequest } from "@/types";
 
@@ -73,7 +72,6 @@ describe("zkEngine init", () => {
   it("falls back cleanly when artifact fetches are unavailable", async () => {
     globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
       fetchCalls.push({ input: String(input), init });
-
       return {
         ok: false,
         json: async () => ({}),
@@ -87,22 +85,22 @@ describe("zkEngine init", () => {
     const proofPayload = proof.proof as Record<string, unknown>;
     const artifactHints = proofPayload.artifactHints as Record<string, unknown>;
 
-    assert.equal(proofPayload.scheme, "mock");
-    assert.equal(artifactHints.hasVerificationKey, false);
-    assert.equal(artifactHints.circuitWasmBytes, 0);
-    assert.equal(fetchCalls.length, 2);
-    assert.ok(
+    expect(proofPayload.scheme).toBe("mock");
+    expect(artifactHints.hasVerificationKey).toBe(false);
+    expect(artifactHints.circuitWasmBytes).toBe(0);
+    expect(fetchCalls).toHaveLength(2);
+    expect(
       fetchCalls.some(
         (call) =>
           call.input === "/zk/verification_key.json" &&
           call.init?.cache === "force-cache"
       )
-    );
-    assert.ok(
+    ).toBe(true);
+    expect(
       fetchCalls.some(
         (call) => call.input === "/zk/payroll.wasm" && call.init?.cache === "force-cache"
       )
-    );
+    ).toBe(true);
   });
 
   it("caches singleton initialization across concurrent calls", async () => {
@@ -127,11 +125,12 @@ describe("zkEngine init", () => {
     await Promise.all([initializeZkEngine(), initializeZkEngine()]);
     await zkEngine.generateProof(buildProofRequest());
 
-    assert.equal(fetchCalls.length, 2);
-    assert.equal(
-      fetchCalls.filter((call) => call.input === "/zk/verification_key.json").length,
-      1
-    );
-    assert.equal(fetchCalls.filter((call) => call.input === "/zk/payroll.wasm").length, 1);
+    expect(fetchCalls).toHaveLength(2);
+    expect(
+      fetchCalls.filter((call) => call.input === "/zk/verification_key.json")
+    ).toHaveLength(1);
+    expect(
+      fetchCalls.filter((call) => call.input === "/zk/payroll.wasm")
+    ).toHaveLength(1);
   });
 });
