@@ -78,6 +78,7 @@ function EmployeeDirectory() {
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState
+            screen={statusFilter === "all" ? "employees" : "employees-filtered"}
             icon={Users}
             title={statusFilter === "all" ? "No employees yet" : `No ${statusFilter} employees`}
             description={
