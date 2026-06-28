@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { generatePayrollProof } from "@/lib/zk";
+import { HelpButton } from "@/components/ui/HelpDrawer";
 
 interface ProofUiState {
 	status: "idle" | "running" | "success" | "error";
@@ -66,9 +67,12 @@ function PayrollSummary() {
 
 	return (
 		<section className="space-y-6" aria-labelledby="payroll-summary-heading">
-			<h2 id="payroll-summary-heading" className="sr-only">
-				Payroll Summary
-			</h2>
+			<div className="flex items-center justify-between">
+				<h2 id="payroll-summary-heading" className="sr-only">
+					Payroll Summary
+				</h2>
+				<HelpButton page="payroll" label="Help" />
+			</div>
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6" role="list">
 				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
 					<h3 className="text-sm font-medium text-gray-600">Total Payroll</h3>

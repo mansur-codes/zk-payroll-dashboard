@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { useViewKeyStore } from "@/stores/viewKeys";
 import { MOCK_VIEW_KEYS } from "@/lib/api/mockData";
+import { HelpButton } from "@/components/ui/HelpDrawer";
 import type { ViewKey } from "@/types";
 
 function generateKeyId(): string {
@@ -111,14 +112,17 @@ function ComplianceManager() {
             ensures auditors see only what they are authorized to review.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowForm(!showForm)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Generate Key
-        </button>
+        <div className="flex items-center gap-2">
+          <HelpButton page="compliance" label="Help" />
+          <button
+            type="button"
+            onClick={() => setShowForm(!showForm)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Generate Key
+          </button>
+        </div>
       </div>
 
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
