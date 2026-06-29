@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 
-import { Users, Loader2, UserPlus }
+import { Users, Loader2, UserPlus, Upload } from "lucide-react";
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
@@ -89,6 +89,13 @@ function EmployeeDirectory() {
               <UserPlus className="w-3.5 h-3.5" aria-hidden="true" />
               Add Employee
             </button>
+            <a
+              href="/employees/import"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+            >
+              <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+              Import CSV
+            </a>
           </div>
         </div>
 

@@ -18,6 +18,7 @@ import { useViewKeyStore } from "@/stores/viewKeys";
 import { useAuditRequestStore } from "@/stores/auditRequests";
 import { MOCK_VIEW_KEYS, MOCK_AUDIT_REQUESTS } from "@/lib/api/mockData";
 import { HelpButton } from "@/components/ui/HelpDrawer";
+import AuditActivityFeed from "./AuditActivityFeed";
 import type { ViewKey } from "@/types";
 import type { AuditAccessRequest } from "@/types/models";
 
@@ -321,6 +322,8 @@ function ComplianceManager() {
           </div>
         </div>
       )}
+
+      <AuditActivityFeed />
 
       {activeKeys.length > 0 && (
         <div>

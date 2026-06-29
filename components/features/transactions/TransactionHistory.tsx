@@ -18,6 +18,7 @@ import TransactionDetailDrawer from "./TransactionDetailDrawer";
   Pencil,
   Trash2,
   Check,
+  ExternalLink,
 } from "lucide-react";
 import { MOCK_TRANSACTIONS, MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { PayrollTransaction } from "@/types";
@@ -562,18 +563,29 @@ function TransactionHistory() {
                     {new Date(tx.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleViewDetails(tx);
-                      }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors"
-                      aria-label={`View details for transaction ${tx.id}`}
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      Details
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={`/payroll/runs/${tx.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                        aria-label={`View full payroll run ${tx.id}`}
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        View Run
+                      </a>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewDetails(tx);
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors"
+                        aria-label={`View details for transaction ${tx.id}`}
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        Details
+                      </button>
+                    </div>
                   </td>
         {/* ── Active filter bar with save button ──────────────────── */}
         {hasFiltersApplied && (
