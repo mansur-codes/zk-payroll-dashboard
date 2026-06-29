@@ -218,6 +218,7 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
   if (!isOpen) return null;
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}

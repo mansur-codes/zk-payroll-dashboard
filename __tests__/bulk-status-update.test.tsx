@@ -84,7 +84,7 @@ describe('BulkStatusUpdate', () => {
 
   it('target status dropdown defaults to active', () => {
     render(<BulkStatusUpdate />);
-    const select = screen.getByRole('combobox', { name: /target status/i }) as HTMLSelectElement;
+    const select = screen.getByRole('combobox', { name: /set status to/i }) as HTMLSelectElement;
     expect(select.value).toBe('active');
   });
 

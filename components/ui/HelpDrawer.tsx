@@ -1,6 +1,6 @@
 "use client";
 
-import { useHelpDrawer } from "@/stores/helpDrawer";
+import { useHelpDrawer, HELP_CONTENT } from "@/stores/helpDrawer";
 import { X, HelpCircle } from "lucide-react";
 import { Button } from "./button";
 
@@ -68,7 +68,6 @@ export function HelpDrawer() {
 
 export function HelpButton({ page, label = "Help" }: { page: string; label?: string }) {
   const { openHelp } = useHelpDrawer();
-  const { HELP_CONTENT } = require("@/stores/helpDrawer");
 
   const handleClick = () => {
     const content = HELP_CONTENT[page];
