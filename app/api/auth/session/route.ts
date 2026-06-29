@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSessionToken, SESSION_COOKIE_NAME } from '@/lib/auth/session';
-import type { UserRole } from '@/types';
+import { resolveRole } from '@/lib/auth/roles';
 
 export async function POST(request: Request) {
   try {
@@ -13,8 +13,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const adminKey = process.env.ADMIN_PUBLIC_KEY;
-    const role: UserRole = publicKey === adminKey ? 'admin' : 'employee';
+    const role = resolveRole(publicKey);
 
     const token = await createSessionToken(publicKey, role);
 

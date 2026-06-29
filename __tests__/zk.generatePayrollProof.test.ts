@@ -1,6 +1,5 @@
-import assert from "node:assert/strict";
 import { webcrypto } from "node:crypto";
-import { afterEach, beforeEach, describe, it } from "node:test";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { generatePayrollProof, resetZkEngineForTests } from "@/lib/zk";
 
 type FetchCall = {
@@ -35,11 +34,7 @@ describe("generatePayrollProof", () => {
     });
 
     globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
-      fetchCalls.push({
-        input: String(input),
-        init,
-      });
-
+      fetchCalls.push({ input: String(input), init });
       return {
         ok: false,
         json: async () => ({}),
@@ -77,46 +72,43 @@ describe("generatePayrollProof", () => {
       salt: "salt-value",
     });
 
-    assert.deepEqual(result.publicInputs, {
+    expect(result.publicInputs).toEqual({
       merkleRoot: "0xabc123",
       totalPayrollAmount: "124500",
       payrollPeriodId: "2026-02",
     });
-    assert.deepEqual(result.proof.publicSignals, ["0xabc123", "124500", "2026-02"]);
-    assert.equal(result.proof.proof.scheme, "mock");
-    assert.equal(result.verification.isValid, true);
-    assert.equal(result.sorobanArgs.length, 4);
-    assert.deepEqual(result.sorobanArgs[0], { type: "string", value: "0xabc123" });
-    assert.deepEqual(result.sorobanArgs[1], { type: "u128", value: "124500" });
-
-    assert.ok(
+    expect(result.proof.publicSignals).toEqual(["0xabc123", "124500", "2026-02"]);
+    expect(result.proof.proof.scheme).toBe("mock");
+    expect(result.verification.isValid).toBe(true);
+    expect(result.sorobanArgs).toHaveLength(4);
+    expect(result.sorobanArgs[0]).toEqual({ type: "string", value: "0xabc123" });
+    expect(result.sorobanArgs[1]).toEqual({ type: "u128", value: "124500" });
+    expect(
       fetchCalls.some(
         (call) =>
           call.input === "/zk/verification_key.json" &&
           call.init?.cache === "force-cache"
       )
-    );
-    assert.ok(
+    ).toBe(true);
+    expect(
       fetchCalls.some(
         (call) => call.input === "/zk/payroll.wasm" && call.init?.cache === "force-cache"
       )
-    );
+    ).toBe(true);
   });
 
   it("throws when required inputs are missing", async () => {
-    await assert.rejects(
-      () =>
-        generatePayrollProof({
-          merkleRoot: "   ",
-          totalPayrollAmount: "124500",
-          payrollPeriodId: "2026-02",
-          employeeId: "emp-001",
-          employeeSsn: "111-22-3333",
-          salaryAmount: "8500",
-        }),
-      /merkleRoot is required/
-    );
+    await expect(
+      generatePayrollProof({
+        merkleRoot: "   ",
+        totalPayrollAmount: "124500",
+        payrollPeriodId: "2026-02",
+        employeeId: "emp-001",
+        employeeSsn: "111-22-3333",
+        salaryAmount: "8500",
+      })
+    ).rejects.toThrow(/merkleRoot is required/);
 
-    assert.equal(fetchCalls.length, 0);
+    expect(fetchCalls).toHaveLength(0);
   });
 });

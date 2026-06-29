@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { generatePayrollProof } from "@/lib/zk";
+import { HelpButton } from "@/components/ui/HelpDrawer";
 
 interface ProofUiState {
 	status: "idle" | "running" | "success" | "error";
@@ -12,6 +13,12 @@ function PayrollSummary() {
 	const [proofState, setProofState] = useState<ProofUiState>({
 		status: "idle",
 	});
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		const t = setTimeout(() => setIsLoading(false), 600);
+		return () => clearTimeout(t);
+	}, []);
 
 	const proofToneClass = useMemo(() => {
 		if (proofState.status === "success") {
@@ -66,9 +73,12 @@ function PayrollSummary() {
 
 	return (
 		<section className="space-y-6" aria-labelledby="payroll-summary-heading">
-			<h2 id="payroll-summary-heading" className="sr-only">
-				Payroll Summary
-			</h2>
+			<div className="flex items-center justify-between">
+				<h2 id="payroll-summary-heading" className="sr-only">
+					Payroll Summary
+				</h2>
+				<HelpButton page="payroll" label="Help" />
+			</div>
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6" role="list">
 				<article className="bg-white p-6 rounded-lg shadow-sm" role="listitem">
 					<h3 className="text-sm font-medium text-gray-600">Total Payroll</h3>
@@ -97,29 +107,31 @@ function PayrollSummary() {
 				</article>
 			</div>
 
-			<article className="bg-white p-6 rounded-lg shadow-sm space-y-3">
-				<h3 className="text-lg font-semibold text-gray-900">
-					Mock ZK Proof Generator
-				</h3>
-				<p className="text-sm text-gray-600">
-					Runs proof generation locally in-browser with placeholder artifacts
-					until final Soroban verifier deployment.
-				</p>
-				<button
-					type="button"
-					className="px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium disabled:opacity-60 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-					onClick={handleGenerateMockProof}
-					disabled={proofState.status === "running"}
-					aria-live="polite"
-				>
-					{proofState.status === "running"
-						? "Generating..."
-						: "Generate Mock Payroll Proof"}
-				</button>
-				<p className={`text-sm ${proofToneClass}`} aria-live="polite" role="status">
-					{proofState.message ?? "No proof generated yet."}
-				</p>
-			</article>
+					<article className="bg-white p-6 rounded-lg shadow-sm space-y-3">
+						<h3 className="text-lg font-semibold text-gray-900">
+							Mock ZK Proof Generator
+						</h3>
+						<p className="text-sm text-gray-600">
+							Runs proof generation locally in-browser with placeholder artifacts
+							until final Soroban verifier deployment.
+						</p>
+						<button
+							type="button"
+							className="px-4 py-2 rounded-md bg-gray-900 text-white text-sm font-medium disabled:opacity-60 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
+							onClick={handleGenerateMockProof}
+							disabled={proofState.status === "running"}
+							aria-live="polite"
+						>
+							{proofState.status === "running"
+								? "Generating..."
+								: "Generate Mock Payroll Proof"}
+						</button>
+						<p className={`text-sm ${proofToneClass}`} aria-live="polite" role="status">
+							{proofState.message ?? "No proof generated yet."}
+						</p>
+					</article>
+				</>
+			)}
 		</section>
 	);
 }

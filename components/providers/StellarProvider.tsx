@@ -43,7 +43,7 @@ const NETWORK_CONFIG: Record<
     },
 };
 
-const EXPECTED_NETWORK: StellarNetwork = 'TESTNET';
+export const EXPECTED_NETWORK: StellarNetwork = 'TESTNET';
 
 const log = createLogger('StellarProvider');
 
@@ -97,6 +97,7 @@ export const StellarProvider: React.FC<{ children: React.ReactNode }> = ({
     const initializingRef = useRef(false);
 
     const networkConfig = NETWORK_CONFIG[network] ?? NETWORK_CONFIG['TESTNET'];
+    const isWrongNetwork = network !== EXPECTED_NETWORK;
 
     // ── Helpers ─────────────────────────────────────────────────────────────
 
@@ -279,6 +280,10 @@ export const StellarProvider: React.FC<{ children: React.ReactNode }> = ({
                 setError('Wallet not connected. Please connect first.');
                 return null;
             }
+            if (isWrongNetwork) {
+                showOverlay('wrong-network', { currentNetwork: network });
+                return null;
+            }
 
             try {
                 setLoading(true);
@@ -301,7 +306,7 @@ export const StellarProvider: React.FC<{ children: React.ReactNode }> = ({
                 setLoading(false);
             }
         },
-        [storeConnected, publicKey, network, showOverlay, setLoading, setError]
+        [storeConnected, publicKey, network, isWrongNetwork, showOverlay, setLoading, setError]
     );
 
     // ── invokeContract() ─────────────────────────────────────────────────────
@@ -310,6 +315,10 @@ export const StellarProvider: React.FC<{ children: React.ReactNode }> = ({
         async ({ contractId, method, args = [] }: InvokeContractParams): Promise<string | null> => {
             if (!storeConnected || !publicKey) {
                 setError('Wallet not connected.');
+                return null;
+            }
+            if (isWrongNetwork) {
+                showOverlay('wrong-network', { currentNetwork: network });
                 return null;
             }
 
@@ -355,7 +364,7 @@ export const StellarProvider: React.FC<{ children: React.ReactNode }> = ({
                 setLoading(false);
             }
         },
-        [storeConnected, publicKey, network, networkConfig, signTx, setLoading, setError]
+        [storeConnected, publicKey, network, isWrongNetwork, networkConfig, signTx, showOverlay, setLoading, setError]
     );
 
     // ── Context value ────────────────────────────────────────────────────────
